@@ -4,29 +4,29 @@ import java.util.ArrayList;
 
 public class Civilization implements Variables {
 
-	// -------------------------------------------------------------------------
-	// Fields
-	// -------------------------------------------------------------------------
+	// Army slots:
+	// [0] Swordsman [1] Spearman [2] Crossbow [3] Cannon
+	// [4] ArrowTower [5] Catapult [6] RocketLauncherTower
+	// [7] Magician [8] Priest
+	private ArrayList<MilitaryUnit>[] army;
+
 	private String name;
 
-	// Technologies
 	private int technologyDefense;
 	private int technologyAttack;
 
-	// Resources
 	private int food;
 	private int wood;
 	private int iron;
 	private int mana;
 
-	// Buildings
 	private int farm;
 	private int carpentry;
 	private int smithy;
 	private int magicTower;
 	private int church;
 
-	// Escalating technology upgrade costs (recalculated after each upgrade)
+	// Technology upgrade costs — increase after each upgrade
 	private int upgradeDefenseTechnologyIronCost;
 	private int upgradeDefenseTechnologyWoodCost;
 	private int upgradeDefenseTechnologyFoodCost;
@@ -34,22 +34,15 @@ public class Civilization implements Variables {
 	private int upgradeAttackTechnologyWoodCost;
 	private int upgradeAttackTechnologyFoodCost;
 
-	// Battle state
 	private int nBattles;
 	private boolean isActiveThreat;
 	private Battle currentThreat;
 	private Battle[] battleReports;
 
-	// Army — 9 slots:
-	// [0] Swordsman [1] Spearman [2] Crossbow [3] Cannon
-	// [4] ArrowTower [5] Catapult [6] RocketLauncherTower
-	// [7] Magician [8] Priest
-	private ArrayList<MilitaryUnit>[] army;
-
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
-	@SuppressWarnings("unchecked")
+
 	public Civilization(String name, int food, int wood, int iron, int mana) {
 		this.name = name;
 		this.food = food;
@@ -79,8 +72,8 @@ public class Civilization implements Variables {
 		this.battleReports = new Battle[5];
 
 		this.army = new ArrayList[9];
-		for (int i = 0; i < army.length; i++) {
-			army[i] = new ArrayList<>();
+		for (int i = 0; i < 9; i++) {
+			army[i] = new ArrayList<MilitaryUnit>();
 		}
 	}
 
@@ -161,13 +154,12 @@ public class Civilization implements Variables {
 			iron -= upgradeDefenseTechnologyIronCost;
 			technologyDefense++;
 
-			// Increase cost for next upgrade
 			upgradeDefenseTechnologyIronCost += upgradeDefenseTechnologyIronCost
-					* (UPGRADE_PLUS_DEFENSE_TECHNOLOGY_IRON_COST / 100f);
+					* UPGRADE_PLUS_DEFENSE_TECHNOLOGY_IRON_COST / 100;
 			upgradeDefenseTechnologyWoodCost += upgradeDefenseTechnologyWoodCost
-					* (UPGRADE_PLUS_DEFENSE_TECHNOLOGY_WOOD_COST / 100f);
+					* UPGRADE_PLUS_DEFENSE_TECHNOLOGY_WOOD_COST / 100;
 			upgradeDefenseTechnologyFoodCost += upgradeDefenseTechnologyFoodCost
-					* (UPGRADE_PLUS_DEFENSE_TECHNOLOGY_FOOD_COST / 100f);
+					* UPGRADE_PLUS_DEFENSE_TECHNOLOGY_FOOD_COST / 100;
 
 			System.out.println("Defense technology now level: " + technologyDefense);
 		} else {
@@ -185,11 +177,11 @@ public class Civilization implements Variables {
 			technologyAttack++;
 
 			upgradeAttackTechnologyIronCost += upgradeAttackTechnologyIronCost
-					* (UPGRADE_PLUS_ATTACK_TECHNOLOGY_IRON_COST / 100f);
+					* UPGRADE_PLUS_ATTACK_TECHNOLOGY_IRON_COST / 100;
 			upgradeAttackTechnologyWoodCost += upgradeAttackTechnologyWoodCost
-					* (UPGRADE_PLUS_ATTACK_TECHNOLOGY_WOOD_COST / 100f);
+					* UPGRADE_PLUS_ATTACK_TECHNOLOGY_WOOD_COST / 100;
 			upgradeAttackTechnologyFoodCost += upgradeAttackTechnologyFoodCost
-					* (UPGRADE_PLUS_ATTACK_TECHNOLOGY_FOOD_COST / 100f);
+					* UPGRADE_PLUS_ATTACK_TECHNOLOGY_FOOD_COST / 100;
 
 			System.out.println("Attack technology now level: " + technologyAttack);
 		} else {
@@ -198,70 +190,83 @@ public class Civilization implements Variables {
 	}
 
 	// -------------------------------------------------------------------------
-	// Helper — calculate stat (armor or damage) with technology bonus
+	// New unit methods — Attack
+	// Each method: calculate stats with technology, then loop creating units
 	// formula: base + (techLevel * plusPct * base) / 100
 	// -------------------------------------------------------------------------
-	private int calcStat(int base, int techLevel, int plusPct) {
-		return base + (techLevel * plusPct * base) / 100;
-	}
 
-	// -------------------------------------------------------------------------
-	// Helper — create n units of any type, spending resources, adding to army slot
-	// -------------------------------------------------------------------------
-	private void createUnits(int n, int slot, int foodCost, int woodCost, int ironCost, int manaCost,
-			UnitFactory factory, String unitName) throws ResourceException {
+	public void newSwordsman(int n) throws ResourceException {
+		int armor = ARMOR_SWORDSMAN + (technologyDefense * PLUS_ARMOR_SWORDSMAN_BY_TECHNOLOGY * ARMOR_SWORDSMAN) / 100;
+		int damage = BASE_DAMAGE_SWORDSMAN
+				+ (technologyAttack * PLUS_ATTACK_SWORDSMAN_BY_TECHNOLOGY * BASE_DAMAGE_SWORDSMAN) / 100;
 		int added = 0;
 		for (int i = 0; i < n; i++) {
-			if (food >= foodCost && wood >= woodCost && iron >= ironCost && mana >= manaCost) {
-				food -= foodCost;
-				wood -= woodCost;
-				iron -= ironCost;
-				mana -= manaCost;
-				army[slot].add(factory.create());
+			if (food >= FOOD_COST_SWORDSMAN && wood >= WOOD_COST_SWORDSMAN && iron >= IRON_COST_SWORDSMAN) {
+				food -= FOOD_COST_SWORDSMAN;
+				wood -= WOOD_COST_SWORDSMAN;
+				iron -= IRON_COST_SWORDSMAN;
+				army[0].add(new Swordsman(armor, damage));
 				added++;
 			} else {
-				System.out.println("Added " + added + " " + unitName + "(s).");
-				throw new ResourceException("Not enough resources to add more " + unitName + "s. Added: " + added);
+				System.out.println("Added " + added + " Swordsman(s).");
+				throw new ResourceException("Not enough resources to add more Swordsmen. Added: " + added);
 			}
 		}
 	}
 
-	// Simple functional interface so createUnits() can call any constructor
-	@FunctionalInterface
-	private interface UnitFactory {
-		MilitaryUnit create();
-	}
-
-	// -------------------------------------------------------------------------
-	// New unit methods — Attack
-	// -------------------------------------------------------------------------
-
-	public void newSwordsman(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_SWORDSMAN, technologyDefense, PLUS_ARMOR_SWORDSMAN_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_SWORDSMAN, technologyAttack, PLUS_ATTACK_SWORDSMAN_BY_TECHNOLOGY);
-		createUnits(n, 0, FOOD_COST_SWORDSMAN, WOOD_COST_SWORDSMAN, IRON_COST_SWORDSMAN, MANA_COST_SWORDSMAN,
-				() -> new Swordsman(armor, damage), "Swordsman");
-	}
-
 	public void newSpearman(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_SPEARMAN, technologyDefense, PLUS_ARMOR_SPEARMAN_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_SPEARMAN, technologyAttack, PLUS_ATTACK_SPEARMAN_BY_TECHNOLOGY);
-		createUnits(n, 1, FOOD_COST_SPEARMAN, WOOD_COST_SPEARMAN, IRON_COST_SPEARMAN, MANA_COST_SPEARMAN,
-				() -> new Spearman(armor, damage), "Spearman");
+		int armor = ARMOR_SPEARMAN + (technologyDefense * PLUS_ARMOR_SPEARMAN_BY_TECHNOLOGY * ARMOR_SPEARMAN) / 100;
+		int damage = BASE_DAMAGE_SPEARMAN
+				+ (technologyAttack * PLUS_ATTACK_SPEARMAN_BY_TECHNOLOGY * BASE_DAMAGE_SPEARMAN) / 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (food >= FOOD_COST_SPEARMAN && wood >= WOOD_COST_SPEARMAN && iron >= IRON_COST_SPEARMAN) {
+				food -= FOOD_COST_SPEARMAN;
+				wood -= WOOD_COST_SPEARMAN;
+				iron -= IRON_COST_SPEARMAN;
+				army[1].add(new Spearman(armor, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Spearman(s).");
+				throw new ResourceException("Not enough resources to add more Spearmen. Added: " + added);
+			}
+		}
 	}
 
 	public void newCrossbow(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_CROSSBOW, technologyDefense, PLUS_ARMOR_CROSSBOW_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_CROSSBOW, technologyAttack, PLUS_ATTACK_CROSSBOW_BY_TECHNOLOGY);
-		createUnits(n, 2, FOOD_COST_CROSSBOW, WOOD_COST_CROSSBOW, IRON_COST_CROSSBOW, MANA_COST_CROSSBOW,
-				() -> new Crossbow(armor, damage), "Crossbow");
+		int armor = ARMOR_CROSSBOW + (technologyDefense * PLUS_ARMOR_CROSSBOW_BY_TECHNOLOGY * ARMOR_CROSSBOW) / 100;
+		int damage = BASE_DAMAGE_CROSSBOW
+				+ (technologyAttack * PLUS_ATTACK_CROSSBOW_BY_TECHNOLOGY * BASE_DAMAGE_CROSSBOW) / 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (wood >= WOOD_COST_CROSSBOW && iron >= IRON_COST_CROSSBOW) {
+				wood -= WOOD_COST_CROSSBOW;
+				iron -= IRON_COST_CROSSBOW;
+				army[2].add(new Crossbow(armor, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Crossbow(s).");
+				throw new ResourceException("Not enough resources to add more Crossbows. Added: " + added);
+			}
+		}
 	}
 
 	public void newCannon(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_CANNON, technologyDefense, PLUS_ARMOR_CANNON_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_CANNON, technologyAttack, PLUS_ATTACK_CANNON_BY_TECHNOLOGY);
-		createUnits(n, 3, FOOD_COST_CANNON, WOOD_COST_CANNON, IRON_COST_CANNON, MANA_COST_CANNON,
-				() -> new Cannon(armor, damage), "Cannon");
+		int armor = ARMOR_CANNON + (technologyDefense * PLUS_ARMOR_CANNON_BY_TECHNOLOGY * ARMOR_CANNON) / 100;
+		int damage = BASE_DAMAGE_CANNON
+				+ (technologyAttack * PLUS_ATTACK_CANNON_BY_TECHNOLOGY * BASE_DAMAGE_CANNON) / 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (wood >= WOOD_COST_CANNON && iron >= IRON_COST_CANNON) {
+				wood -= WOOD_COST_CANNON;
+				iron -= IRON_COST_CANNON;
+				army[3].add(new Cannon(armor, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Cannon(s).");
+				throw new ResourceException("Not enough resources to add more Cannons. Added: " + added);
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -269,26 +274,59 @@ public class Civilization implements Variables {
 	// -------------------------------------------------------------------------
 
 	public void newArrowTower(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_ARROWTOWER, technologyDefense, PLUS_ARMOR_ARROWTOWER_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_ARROWTOWER, technologyAttack, PLUS_ATTACK_ARROWTOWER_BY_TECHNOLOGY);
-		createUnits(n, 4, FOOD_COST_ARROWTOWER, WOOD_COST_ARROWTOWER, IRON_COST_ARROWTOWER, MANA_COST_ARROWTOWER,
-				() -> new ArrowTower(armor, damage), "Arrow Tower");
+		int armor = ARMOR_ARROWTOWER
+				+ (technologyDefense * PLUS_ARMOR_ARROWTOWER_BY_TECHNOLOGY * ARMOR_ARROWTOWER) / 100;
+		int damage = BASE_DAMAGE_ARROWTOWER
+				+ (technologyAttack * PLUS_ATTACK_ARROWTOWER_BY_TECHNOLOGY * BASE_DAMAGE_ARROWTOWER) / 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (wood >= WOOD_COST_ARROWTOWER) {
+				wood -= WOOD_COST_ARROWTOWER;
+				army[4].add(new ArrowTower(armor, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Arrow Tower(s).");
+				throw new ResourceException("Not enough resources to add more Arrow Towers. Added: " + added);
+			}
+		}
 	}
 
 	public void newCatapult(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_CATAPULT, technologyDefense, PLUS_ARMOR_CATAPULT_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_CATAPULT, technologyAttack, PLUS_ATTACK_CATAPULT_BY_TECHNOLOGY);
-		createUnits(n, 5, FOOD_COST_CATAPULT, WOOD_COST_CATAPULT, IRON_COST_CATAPULT, MANA_COST_CATAPULT,
-				() -> new Catapult(armor, damage), "Catapult");
+		int armor = ARMOR_CATAPULT + (technologyDefense * PLUS_ARMOR_CATAPULT_BY_TECHNOLOGY * ARMOR_CATAPULT) / 100;
+		int damage = BASE_DAMAGE_CATAPULT
+				+ (technologyAttack * PLUS_ATTACK_CATAPULT_BY_TECHNOLOGY * BASE_DAMAGE_CATAPULT) / 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (wood >= WOOD_COST_CATAPULT && iron >= IRON_COST_CATAPULT) {
+				wood -= WOOD_COST_CATAPULT;
+				iron -= IRON_COST_CATAPULT;
+				army[5].add(new Catapult(armor, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Catapult(s).");
+				throw new ResourceException("Not enough resources to add more Catapults. Added: " + added);
+			}
+		}
 	}
 
 	public void newRocketLauncher(int n) throws ResourceException {
-		int armor = calcStat(ARMOR_ROCKETLAUNCHERTOWER, technologyDefense,
-				PLUS_ARMOR_ROCKETLAUNCHERTOWER_BY_TECHNOLOGY);
-		int damage = calcStat(BASE_DAMAGE_ROCKETLAUNCHERTOWER, technologyAttack,
-				PLUS_ATTACK_ROCKETLAUNCHERTOWER_BY_TECHNOLOGY);
-		createUnits(n, 6, FOOD_COST_ROCKETLAUNCHERTOWER, WOOD_COST_ROCKETLAUNCHERTOWER, IRON_COST_ROCKETLAUNCHERTOWER,
-				MANA_COST_ROCKETLAUNCHERTOWER, () -> new RocketLauncherTower(armor, damage), "Rocket Launcher Tower");
+		int armor = ARMOR_ROCKETLAUNCHERTOWER
+				+ (technologyDefense * PLUS_ARMOR_ROCKETLAUNCHERTOWER_BY_TECHNOLOGY * ARMOR_ROCKETLAUNCHERTOWER) / 100;
+		int damage = BASE_DAMAGE_ROCKETLAUNCHERTOWER
+				+ (technologyAttack * PLUS_ATTACK_ROCKETLAUNCHERTOWER_BY_TECHNOLOGY * BASE_DAMAGE_ROCKETLAUNCHERTOWER)
+						/ 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (wood >= WOOD_COST_ROCKETLAUNCHERTOWER && iron >= IRON_COST_ROCKETLAUNCHERTOWER) {
+				wood -= WOOD_COST_ROCKETLAUNCHERTOWER;
+				iron -= IRON_COST_ROCKETLAUNCHERTOWER;
+				army[6].add(new RocketLauncherTower(armor, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Rocket Launcher(s).");
+				throw new ResourceException("Not enough resources to add more Rocket Launchers. Added: " + added);
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -299,43 +337,72 @@ public class Civilization implements Variables {
 		if (magicTower < 1) {
 			throw new BuildingException("You need at least 1 Magic Tower to create Magicians.");
 		}
-		int damage = calcStat(BASE_DAMAGE_MAGICIAN, technologyAttack, PLUS_ATTACK_MAGICIAN_BY_TECHNOLOGY);
-		createUnits(n, 7, FOOD_COST_MAGICIAN, WOOD_COST_MAGICIAN, IRON_COST_MAGICIAN, MANA_COST_MAGICIAN,
-				() -> new Magician(0, damage), "Magician");
+		int damage = BASE_DAMAGE_MAGICIAN
+				+ (technologyAttack * PLUS_ATTACK_MAGICIAN_BY_TECHNOLOGY * BASE_DAMAGE_MAGICIAN) / 100;
+		int added = 0;
+		for (int i = 0; i < n; i++) {
+			if (food >= FOOD_COST_MAGICIAN && wood >= WOOD_COST_MAGICIAN && iron >= IRON_COST_MAGICIAN
+					&& mana >= MANA_COST_MAGICIAN) {
+				food -= FOOD_COST_MAGICIAN;
+				wood -= WOOD_COST_MAGICIAN;
+				iron -= IRON_COST_MAGICIAN;
+				mana -= MANA_COST_MAGICIAN;
+				army[7].add(new Magician(0, damage));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Magician(s).");
+				throw new ResourceException("Not enough resources to add more Magicians. Added: " + added);
+			}
+		}
 	}
 
 	public void newPriest(int n) throws ResourceException, BuildingException {
 		if (church < 1) {
 			throw new BuildingException("You need at least 1 Church to create Priests.");
 		}
-		if (army[7].isEmpty()) { // needs Magician / MagicTower indirectly via church
-			// Church already requires MagicTower, so no extra check needed
-		}
-		// Max priests == number of churches
 		int currentPriests = army[8].size();
 		int canAdd = church - currentPriests;
 		if (canAdd <= 0) {
 			throw new BuildingException("You need more Churches to have more Priests (1 Church per Priest).");
 		}
-		int toAdd = Math.min(n, canAdd);
-		createUnits(toAdd, 8, FOOD_COST_PRIEST, WOOD_COST_PRIEST, IRON_COST_PRIEST, MANA_COST_PRIEST,
-				() -> new Priest(0, 0), "Priest");
+		int toAdd = n;
+		if (toAdd > canAdd) {
+			toAdd = canAdd;
+		}
+		int added = 0;
+		for (int i = 0; i < toAdd; i++) {
+			if (food >= FOOD_COST_PRIEST && mana >= MANA_COST_PRIEST) {
+				food -= FOOD_COST_PRIEST;
+				mana -= MANA_COST_PRIEST;
+				army[8].add(new Priest(0, 0));
+				added++;
+			} else {
+				System.out.println("Added " + added + " Priest(s).");
+				throw new ResourceException("Not enough resources to add more Priests. Added: " + added);
+			}
+		}
 		if (toAdd < n) {
 			throw new BuildingException("Only " + toAdd + " Priest(s) added. Build more Churches to train more.");
 		}
 	}
 
 	// -------------------------------------------------------------------------
-	// Sanctify / desanctify all units
+	// Sanctify / desanctify all attack and defense units
+	// Called by Battle when a Priest is alive
 	// -------------------------------------------------------------------------
 
 	public void sanctifyArmy(boolean sanctified) {
-		for (int i = 0; i < 7; i++) { // Attack + Defense slots (not special units)
-			for (MilitaryUnit unit : army[i]) {
-				if (unit instanceof AttackUnit)
-					((AttackUnit) unit).setSanctified(sanctified);
-				if (unit instanceof DefenseUnit)
-					((DefenseUnit) unit).setSanctified(sanctified);
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < army[i].size(); j++) {
+				MilitaryUnit unit = army[i].get(j);
+				if (unit instanceof AttackUnit) {
+					AttackUnit au = (AttackUnit) unit;
+					au.setSanctified(sanctified);
+				}
+				if (unit instanceof DefenseUnit) {
+					DefenseUnit du = (DefenseUnit) unit;
+					du.setSanctified(sanctified);
+				}
 			}
 		}
 	}
@@ -344,44 +411,33 @@ public class Civilization implements Variables {
 	// Utility
 	// -------------------------------------------------------------------------
 
-	/**
-	 * Returns the army subarray containing only attack units (slots 0-3), used in
-	 * Battle.
-	 */
-	@SuppressWarnings("unchecked")
 	public ArrayList<MilitaryUnit>[] getAttackerArmy() {
 		ArrayList<MilitaryUnit>[] attackerArmy = new ArrayList[9];
-		for (int i = 0; i < 9; i++) {
-			attackerArmy[i] = (i < 4) ? army[i] : new ArrayList<>();
+		for (int i = 0; i < 4; i++) {
+			attackerArmy[i] = army[i];
+		}
+		for (int i = 4; i < 9; i++) {
+			attackerArmy[i] = new ArrayList<MilitaryUnit>();
 		}
 		return attackerArmy;
 	}
 
 	public void resetArmyArmor() {
-		for (ArrayList<MilitaryUnit> slot : army) {
-			for (MilitaryUnit unit : slot) {
-				unit.resetArmor();
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < army[i].size(); j++) {
+				army[i].get(j).resetArmor();
 			}
 		}
 	}
 
 	public int getTotalTroops() {
 		int total = 0;
-		for (ArrayList<MilitaryUnit> slot : army)
-			total += slot.size();
+		for (int i = 0; i < 9; i++) {
+			total += army[i].size();
+		}
 		return total;
 	}
 
-	// Calculates the escalating upgrade cost for a technology at a given level
-	public int calculateUpgradeTechnologyCost(int baseCost, int percentage, int targetLevel) {
-		int cost = baseCost;
-		for (int i = 1; i < targetLevel; i++) {
-			cost += cost * percentage / 100;
-		}
-		return cost;
-	}
-
-	// Resource generation per tick (for ResourceTimer)
 	public int getFoodGenerated() {
 		return CIVILIZATION_FOOD_GENERATED + farm * CIVILIZATION_FOOD_GENERATED_PER_FARM;
 	}
@@ -403,7 +459,6 @@ public class Civilization implements Variables {
 	// -------------------------------------------------------------------------
 
 	public void addBattleReport(Battle report) {
-		// Shift all reports one position forward, keeping the last 5
 		for (int i = battleReports.length - 1; i > 0; i--) {
 			battleReports[i] = battleReports[i - 1];
 		}
@@ -424,41 +479,43 @@ public class Civilization implements Variables {
 
 	public void printStats() {
 		System.out.println("\n ***************************CIVILIZATION STATS*************************** ");
-		System.out.printf("%-30s%s%n", "--------------------------------------------------TECHNOLOGY",
-				"----------------------------------------");
-		System.out.printf("  %-20s%s%n", "Attack", "Defense");
-		System.out.printf("  %-20d%d%n", technologyAttack, technologyDefense);
+		System.out.println(
+				"--------------------------------------------------TECHNOLOGY----------------------------------------");
+		System.out.println("  Attack       Defense");
+		System.out.println("  " + technologyAttack + "            " + technologyDefense);
 
-		System.out.printf("%-30s%s%n", "---------------------------------------------------BUILDINGS",
-				"----------------------------------------");
-		System.out.printf("  %-12s%-12s%-12s%-14s%s%n", "Farm", "Smithy", "Carpentry", "Magic Tower", "Church");
-		System.out.printf("  %-12d%-12d%-12d%-14d%d%n", farm, smithy, carpentry, magicTower, church);
+		System.out.println(
+				"---------------------------------------------------BUILDINGS----------------------------------------");
+		System.out.println("  Farm    Smithy  Carpentry  Magic Tower  Church");
+		System.out.println("  " + farm + "       " + smithy + "       " + carpentry + "          " + magicTower
+				+ "            " + church);
 
-		System.out.printf("%-30s%s%n", "----------------------------------------------------DEFENSES",
-				"----------------------------------------");
-		System.out.printf("  %-14s%-14s%s%n", "Arrow Tower", "Catapult", "Rocket Launcher");
-		System.out.printf("  %-14d%-14d%d%n", army[4].size(), army[5].size(), army[6].size());
+		System.out.println(
+				"----------------------------------------------------DEFENSES----------------------------------------");
+		System.out.println("  Arrow Tower    Catapult    Rocket Launcher");
+		System.out.println("  " + army[4].size() + "              " + army[5].size() + "           " + army[6].size());
 
-		System.out.printf("%-30s%s%n", "------------------------------------------------ATTACK UNITS",
-				"----------------------------------------");
-		System.out.printf("  %-14s%-14s%-14s%s%n", "Swordsman", "Spearman", "Crossbow", "Cannon");
-		System.out.printf("  %-14d%-14d%-14d%d%n", army[0].size(), army[1].size(), army[2].size(), army[3].size());
+		System.out.println(
+				"------------------------------------------------ATTACK UNITS----------------------------------------");
+		System.out.println("  Swordsman    Spearman    Crossbow    Cannon");
+		System.out.println("  " + army[0].size() + "            " + army[1].size() + "           " + army[2].size()
+				+ "          " + army[3].size());
 
-		System.out.printf("%-30s%s%n", "----------------------------------------------SPECIAL UNITS",
-				"----------------------------------------");
-		System.out.printf("  %-14s%s%n", "Magician", "Priest");
-		System.out.printf("  %-14d%d%n", army[7].size(), army[8].size());
+		System.out.println(
+				"----------------------------------------------SPECIAL UNITS----------------------------------------");
+		System.out.println("  Magician    Priest");
+		System.out.println("  " + army[7].size() + "           " + army[8].size());
 
-		System.out.printf("%-30s%s%n", "---------------------------------------------------RESOURCES",
-				"----------------------------------------");
-		System.out.printf("  %-14s%-14s%-14s%s%n", "Food", "Wood", "Iron", "Mana");
-		System.out.printf("  %-14d%-14d%-14d%d%n", food, wood, iron, mana);
+		System.out.println(
+				"---------------------------------------------------RESOURCES----------------------------------------");
+		System.out.println("  Food         Wood         Iron         Mana");
+		System.out.println("  " + food + "     " + wood + "     " + iron + "     " + mana);
 
-		System.out.printf("%-30s%s%n", "----------------------------------------GENERATION RESOURCES",
-				"----------------------------------------");
-		System.out.printf("  %-14s%-14s%-14s%s%n", "Food", "Wood", "Iron", "Mana");
-		System.out.printf("  %-14d%-14d%-14d%d%n", getFoodGenerated(), getWoodGenerated(), getIronGenerated(),
-				getManaGenerated());
+		System.out.println(
+				"----------------------------------------GENERATION RESOURCES----------------------------------------");
+		System.out.println("  Food         Wood         Iron         Mana");
+		System.out.println("  " + getFoodGenerated() + "     " + getWoodGenerated() + "     " + getIronGenerated()
+				+ "     " + getManaGenerated());
 		System.out.println();
 	}
 
@@ -478,16 +535,16 @@ public class Civilization implements Variables {
 		return technologyDefense;
 	}
 
-	public void setTechnologyDefense(int v) {
-		this.technologyDefense = v;
+	public void setTechnologyDefense(int technologyDefense) {
+		this.technologyDefense = technologyDefense;
 	}
 
 	public int getTechnologyAttack() {
 		return technologyAttack;
 	}
 
-	public void setTechnologyAttack(int v) {
-		this.technologyAttack = v;
+	public void setTechnologyAttack(int technologyAttack) {
+		this.technologyAttack = technologyAttack;
 	}
 
 	public int getFood() {
@@ -574,16 +631,16 @@ public class Civilization implements Variables {
 		return isActiveThreat;
 	}
 
-	public void setActiveThreat(boolean v) {
-		this.isActiveThreat = v;
+	public void setActiveThreat(boolean isActiveThreat) {
+		this.isActiveThreat = isActiveThreat;
 	}
 
 	public Battle getCurrentThreat() {
 		return currentThreat;
 	}
 
-	public void setCurrentThreat(Battle b) {
-		this.currentThreat = b;
+	public void setCurrentThreat(Battle currentThreat) {
+		this.currentThreat = currentThreat;
 	}
 
 	public ArrayList<MilitaryUnit>[] getArmy() {
@@ -602,10 +659,9 @@ public class Civilization implements Variables {
 		return upgradeAttackTechnologyIronCost;
 	}
 
-	@Override
 	public String toString() {
-		return "Civilization{name='" + name + "', tDefense=" + technologyDefense + ", tAttack=" + technologyAttack
+		return "Civilization [name=" + name + ", tDefense=" + technologyDefense + ", tAttack=" + technologyAttack
 				+ ", food=" + food + ", wood=" + wood + ", iron=" + iron + ", mana=" + mana + ", battles=" + nBattles
-				+ "}";
+				+ "]";
 	}
 }
