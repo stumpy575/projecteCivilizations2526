@@ -1,17 +1,17 @@
-package programacio;
+package clases;
 
-public class Swordsman extends AttackUnit {
+public class Cannon extends AttackUnit {
 
-	public Swordsman(int armor, int baseDamage) {
+	public Cannon(int armor, int baseDamage) {
 		setArmor(armor);
 		setInitialArmor(armor);
 		setBaseDamage(baseDamage);
 	}
 
-	public Swordsman() {
-		setArmor(Variables.ARMOR_SWORDSMAN);
-		setInitialArmor(Variables.ARMOR_SWORDSMAN);
-		setBaseDamage(Variables.BASE_DAMAGE_SWORDSMAN);
+	public Cannon() {
+		setArmor(Variables.ARMOR_CANNON);
+		setInitialArmor(Variables.ARMOR_CANNON);
+		setBaseDamage(Variables.BASE_DAMAGE_CANNON);
 	}
 
 	public int attack() {
@@ -23,34 +23,34 @@ public class Swordsman extends AttackUnit {
 	}
 
 	public int getFoodCost() {
-		return FOOD_COST_SWORDSMAN;
+		return FOOD_COST_CANNON;
 	}
 
 	public int getWoodCost() {
-		return WOOD_COST_SWORDSMAN;
+		return WOOD_COST_CANNON;
 	}
 
 	public int getIronCost() {
-		return IRON_COST_SWORDSMAN;
+		return IRON_COST_CANNON;
 	}
 
 	public int getManaCost() {
-		return MANA_COST_SWORDSMAN;
+		return MANA_COST_CANNON;
 	}
 
 	public int getChanceGeneratinWaste() {
-		return CHANCE_GENERATING_WASTE_SWORDSMAN;
+		return CHANCE_GENERATING_WASTE_CANNON;
 	}
 
 	public int getChanceAttackAgain() {
-		return CHANCE_ATTACK_AGAIN_SWORDSMAN;
+		return CHANCE_ATTACK_AGAIN_CANNON;
 	}
 
 	public String getName() {
-		return "Swordsman";
+		return "Cannon";
 	}
 
 	public String toString() {
-		return "Swordsman[]";
+		return "Cannon[]";
 	}
 }

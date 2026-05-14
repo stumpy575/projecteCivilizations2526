@@ -1,11 +1,17 @@
-package programacio;
+package clases;
 
-public class Catapult extends DefenseUnit {
+public class Swordsman extends AttackUnit {
 
-	public Catapult(int armor, int baseDamage) {
+	public Swordsman(int armor, int baseDamage) {
 		setArmor(armor);
 		setInitialArmor(armor);
 		setBaseDamage(baseDamage);
+	}
+
+	public Swordsman() {
+		setArmor(Variables.ARMOR_SWORDSMAN);
+		setInitialArmor(Variables.ARMOR_SWORDSMAN);
+		setBaseDamage(Variables.BASE_DAMAGE_SWORDSMAN);
 	}
 
 	public int attack() {
@@ -17,34 +23,34 @@ public class Catapult extends DefenseUnit {
 	}
 
 	public int getFoodCost() {
-		return FOOD_COST_CATAPULT;
+		return FOOD_COST_SWORDSMAN;
 	}
 
 	public int getWoodCost() {
-		return WOOD_COST_CATAPULT;
+		return WOOD_COST_SWORDSMAN;
 	}
 
 	public int getIronCost() {
-		return IRON_COST_CATAPULT;
+		return IRON_COST_SWORDSMAN;
 	}
 
 	public int getManaCost() {
-		return MANA_COST_CATAPULT;
+		return MANA_COST_SWORDSMAN;
 	}
 
 	public int getChanceGeneratinWaste() {
-		return CHANCE_GENERATING_WASTE_CATAPULT;
+		return CHANCE_GENERATING_WASTE_SWORDSMAN;
 	}
 
 	public int getChanceAttackAgain() {
-		return CHANCE_ATTACK_AGAIN_CATAPULT;
+		return CHANCE_ATTACK_AGAIN_SWORDSMAN;
 	}
 
 	public String getName() {
-		return "Catapult";
+		return "Swordsman";
 	}
 
 	public String toString() {
-		return "Catapult[]";
+		return "Swordsman[]";
 	}
 }

@@ -1,17 +1,11 @@
-package programacio;
+package clases;
 
-public class Cannon extends AttackUnit {
+public class ArrowTower extends DefenseUnit {
 
-	public Cannon(int armor, int baseDamage) {
+	public ArrowTower(int armor, int baseDamage) {
 		setArmor(armor);
 		setInitialArmor(armor);
 		setBaseDamage(baseDamage);
-	}
-
-	public Cannon() {
-		setArmor(Variables.ARMOR_CANNON);
-		setInitialArmor(Variables.ARMOR_CANNON);
-		setBaseDamage(Variables.BASE_DAMAGE_CANNON);
 	}
 
 	public int attack() {
@@ -23,34 +17,35 @@ public class Cannon extends AttackUnit {
 	}
 
 	public int getFoodCost() {
-		return FOOD_COST_CANNON;
+		return FOOD_COST_ARROWTOWER;
 	}
 
 	public int getWoodCost() {
-		return WOOD_COST_CANNON;
+		return WOOD_COST_ARROWTOWER;
 	}
 
 	public int getIronCost() {
-		return IRON_COST_CANNON;
+		return IRON_COST_ARROWTOWER;
 	}
 
 	public int getManaCost() {
-		return MANA_COST_CANNON;
+		return MANA_COST_ARROWTOWER;
 	}
 
 	public int getChanceGeneratinWaste() {
-		return CHANCE_GENERATING_WASTE_CANNON;
+		return CHANCE_GENERATING_WASTE_ARROWTOWER;
 	}
 
 	public int getChanceAttackAgain() {
-		return CHANCE_ATTACK_AGAIN_CANNON;
+		return CHANCE_ATTACK_AGAIN_ARROWTOWER;
 	}
 
 	public String getName() {
-		return "Cannon";
+		return "Arrow Tower";
 	}
 
 	public String toString() {
-		return "Cannon[]";
+		return "ArrowTower[]";
 	}
+
 }

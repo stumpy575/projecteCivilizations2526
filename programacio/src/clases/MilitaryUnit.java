@@ -1,4 +1,4 @@
-package programacio;
+package clases;
 
 public interface MilitaryUnit {
 

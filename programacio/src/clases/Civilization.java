@@ -1,4 +1,4 @@
-package programacio;
+package clases;
 
 import java.util.ArrayList;
 

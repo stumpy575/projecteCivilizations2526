@@ -1,11 +1,17 @@
-package programacio;
+package clases;
 
-public class RocketLauncherTower extends DefenseUnit {
+public class Crossbow extends AttackUnit {
 
-	public RocketLauncherTower(int armor, int baseDamage) {
+	public Crossbow(int armor, int baseDamage) {
 		setArmor(armor);
 		setInitialArmor(armor);
 		setBaseDamage(baseDamage);
+	}
+
+	public Crossbow() {
+		setArmor(Variables.ARMOR_CROSSBOW);
+		setInitialArmor(Variables.ARMOR_CROSSBOW);
+		setBaseDamage(Variables.BASE_DAMAGE_CROSSBOW);
 	}
 
 	public int attack() {
@@ -17,34 +23,34 @@ public class RocketLauncherTower extends DefenseUnit {
 	}
 
 	public int getFoodCost() {
-		return FOOD_COST_ROCKETLAUNCHERTOWER;
+		return FOOD_COST_CROSSBOW;
 	}
 
 	public int getWoodCost() {
-		return WOOD_COST_ROCKETLAUNCHERTOWER;
+		return WOOD_COST_CROSSBOW;
 	}
 
 	public int getIronCost() {
-		return IRON_COST_ROCKETLAUNCHERTOWER;
+		return IRON_COST_CROSSBOW;
 	}
 
 	public int getManaCost() {
-		return MANA_COST_ROCKETLAUNCHERTOWER;
+		return MANA_COST_CROSSBOW;
 	}
 
 	public int getChanceGeneratinWaste() {
-		return CHANCE_GENERATING_WASTE_ROCKETLAUNCHERTOWER;
+		return CHANCE_GENERATING_WASTE_CROSSBOW;
 	}
 
 	public int getChanceAttackAgain() {
-		return CHANCE_ATTACK_AGAIN_ROCKETLAUNCHERTOWER;
+		return CHANCE_ATTACK_AGAIN_CROSSBOW;
 	}
 
 	public String getName() {
-		return "Rocket Launcher Tower";
+		return "Crossbow";
 	}
 
 	public String toString() {
-		return "RocketLauncherTower[]";
+		return "Crossbow[]";
 	}
 }

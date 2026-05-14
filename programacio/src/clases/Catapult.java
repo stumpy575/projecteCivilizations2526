@@ -1,17 +1,11 @@
-package programacio;
+package clases;
 
-public class Spearman extends AttackUnit {
+public class Catapult extends DefenseUnit {
 
-	public Spearman(int armor, int baseDamage) {
+	public Catapult(int armor, int baseDamage) {
 		setArmor(armor);
 		setInitialArmor(armor);
 		setBaseDamage(baseDamage);
-	}
-
-	public Spearman() {
-		setArmor(Variables.ARMOR_SPEARMAN);
-		setInitialArmor(Variables.ARMOR_SPEARMAN);
-		setBaseDamage(Variables.BASE_DAMAGE_SPEARMAN);
 	}
 
 	public int attack() {
@@ -23,34 +17,34 @@ public class Spearman extends AttackUnit {
 	}
 
 	public int getFoodCost() {
-		return FOOD_COST_SPEARMAN;
+		return FOOD_COST_CATAPULT;
 	}
 
 	public int getWoodCost() {
-		return WOOD_COST_SPEARMAN;
+		return WOOD_COST_CATAPULT;
 	}
 
 	public int getIronCost() {
-		return IRON_COST_SPEARMAN;
+		return IRON_COST_CATAPULT;
 	}
 
 	public int getManaCost() {
-		return MANA_COST_SPEARMAN;
+		return MANA_COST_CATAPULT;
 	}
 
 	public int getChanceGeneratinWaste() {
-		return CHANCE_GENERATING_WASTE_SPEARMAN;
+		return CHANCE_GENERATING_WASTE_CATAPULT;
 	}
 
 	public int getChanceAttackAgain() {
-		return CHANCE_ATTACK_AGAIN_SPEARMAN;
+		return CHANCE_ATTACK_AGAIN_CATAPULT;
 	}
 
 	public String getName() {
-		return "Spearman";
+		return "Catapult";
 	}
 
 	public String toString() {
-		return "Spearman[]";
+		return "Catapult[]";
 	}
 }

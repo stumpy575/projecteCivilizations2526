@@ -1,4 +1,4 @@
-package programacio;
+package clases;
 
 public abstract class AttackUnit implements MilitaryUnit, Variables {
 
