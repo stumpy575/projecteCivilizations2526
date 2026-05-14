@@ -6,12 +6,11 @@ import java.sql.SQLException;
 // This class manages the connection to the DDBB and pass Connection object to the other database classes
 public class Database  {
     private Connection conn;
-    // TODO: Add all table objects as attributes of this class
 
     public static void main(String[] args) {
 
         /* Local VM */
-        String url = "jdbc:mysql://civilizations2526.c92s82e2qeo2.eu-north-1.rds.amazonaws.com"; // Local VM Oracle ddbb
+        String url = "jdbc:mysql://civilizations2526.c92s82e2qeo2.eu-north-1.rds.amazonaws.com/civilizations";
         String username = "admin";
         String pass = "Jefecolorado123";
 
@@ -60,5 +59,4 @@ public class Database  {
         return conn;
     }
 
-    // TODO: Add some algorithm that checks changes in game and saves data in DDBB "automatically"
 }

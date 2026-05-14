@@ -12,7 +12,7 @@ public class BattleLogTable implements Table {
     private String log_entry;
 
     public static void main(String[] args) {
-        String url = "jdbc:mysql://civilizations2526.c92s82e2qeo2.eu-north-1.rds.amazonaws.com";
+        String url = "jdbc:mysql://civilizations2526.c92s82e2qeo2.eu-north-1.rds.amazonaws.com/civilizations";
         String username = "admin";
         String pass = "Jefecolorado123";
         BattleLogTable blt = new BattleLogTable(new Database(url, username, pass),1,1,"holi");
@@ -53,7 +53,6 @@ public class BattleLogTable implements Table {
         System.out.println("query for inserting data executed");
         try (PreparedStatement ps = db.getConnection().prepareStatement(insertQuery, new String[] { "num_line" });) {
             // inserting data in ddbb
-        	ps.execute("use civilizations");
             System.out.println("PreparedStatement created");
             ps.setInt(1, num_battle);
             ps.setString(2, log_entry);
