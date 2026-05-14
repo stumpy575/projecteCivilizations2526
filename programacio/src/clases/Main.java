@@ -1,4 +1,5 @@
 package clases;
+import GUI.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
