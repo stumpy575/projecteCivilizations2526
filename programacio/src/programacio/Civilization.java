@@ -4,44 +4,30 @@ import java.util.ArrayList;
 
 public class Civilization implements Variables {
 
-	// Army slots:
-	// [0] Swordsman [1] Spearman [2] Crossbow [3] Cannon
-	// [4] ArrowTower [5] Catapult [6] RocketLauncherTower
-	// [7] Magician [8] Priest
 	private ArrayList<MilitaryUnit>[] army;
-
 	private String name;
-
 	private int technologyDefense;
 	private int technologyAttack;
-
 	private int food;
 	private int wood;
 	private int iron;
 	private int mana;
-
 	private int farm;
 	private int carpentry;
 	private int smithy;
 	private int magicTower;
 	private int church;
-
-	// Technology upgrade costs — increase after each upgrade
 	private int upgradeDefenseTechnologyIronCost;
 	private int upgradeDefenseTechnologyWoodCost;
 	private int upgradeDefenseTechnologyFoodCost;
 	private int upgradeAttackTechnologyIronCost;
 	private int upgradeAttackTechnologyWoodCost;
 	private int upgradeAttackTechnologyFoodCost;
-
-	private int nBattles;
+	private int battles;
 	private boolean isActiveThreat;
 	private Battle currentThreat;
 	private Battle[] battleReports;
 
-	// -------------------------------------------------------------------------
-	// Constructor
-	// -------------------------------------------------------------------------
 
 	public Civilization(String name, int food, int wood, int iron, int mana) {
 		this.name = name;
@@ -66,7 +52,7 @@ public class Civilization implements Variables {
 		this.upgradeAttackTechnologyWoodCost = UPGRADE_BASE_ATTACK_TECHNOLOGY_WOOD_COST;
 		this.upgradeAttackTechnologyFoodCost = UPGRADE_BASE_ATTACK_TECHNOLOGY_FOOD_COST;
 
-		this.nBattles = 0;
+		this.battles = 0;
 		this.isActiveThreat = false;
 		this.currentThreat = null;
 		this.battleReports = new Battle[5];
@@ -77,9 +63,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// Buildings
-	// -------------------------------------------------------------------------
 
 	public void newFarm() throws ResourceException {
 		if (food >= FOOD_COST_FARM && wood >= WOOD_COST_FARM && iron >= IRON_COST_FARM) {
@@ -141,9 +124,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// Technology upgrades
-	// -------------------------------------------------------------------------
 
 	public void upgradeTechnologyDefense() throws ResourceException {
 		if (food >= upgradeDefenseTechnologyFoodCost && wood >= upgradeDefenseTechnologyWoodCost
@@ -189,11 +169,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// New unit methods — Attack
-	// Each method: calculate stats with technology, then loop creating units
-	// formula: base + (techLevel * plusPct * base) / 100
-	// -------------------------------------------------------------------------
 
 	public void newSwordsman(int n) throws ResourceException {
 		int armor = ARMOR_SWORDSMAN + (technologyDefense * PLUS_ARMOR_SWORDSMAN_BY_TECHNOLOGY * ARMOR_SWORDSMAN) / 100;
@@ -269,9 +244,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// New unit methods — Defense
-	// -------------------------------------------------------------------------
 
 	public void newArrowTower(int n) throws ResourceException {
 		int armor = ARMOR_ARROWTOWER
@@ -329,9 +301,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// New unit methods — Special
-	// -------------------------------------------------------------------------
 
 	public void newMagician(int n) throws ResourceException, BuildingException {
 		if (magicTower < 1) {
@@ -386,10 +355,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// Sanctify / desanctify all attack and defense units
-	// Called by Battle when a Priest is alive
-	// -------------------------------------------------------------------------
 
 	public void sanctifyArmy(boolean sanctified) {
 		for (int i = 0; i < 7; i++) {
@@ -407,9 +372,6 @@ public class Civilization implements Variables {
 		}
 	}
 
-	// -------------------------------------------------------------------------
-	// Utility
-	// -------------------------------------------------------------------------
 
 	public ArrayList<MilitaryUnit>[] getAttackerArmy() {
 		ArrayList<MilitaryUnit>[] attackerArmy = new ArrayList[9];
@@ -454,9 +416,6 @@ public class Civilization implements Variables {
 		return magicTower * CIVILIZATION_MANA_GENERATED_PER_MAGIC_TOWER;
 	}
 
-	// -------------------------------------------------------------------------
-	// Battle reports
-	// -------------------------------------------------------------------------
 
 	public void addBattleReport(Battle report) {
 		for (int i = battleReports.length - 1; i > 0; i--) {
@@ -473,9 +432,6 @@ public class Civilization implements Variables {
 		return battleReports[n];
 	}
 
-	// -------------------------------------------------------------------------
-	// printStats
-	// -------------------------------------------------------------------------
 
 	public void printStats() {
 		System.out.println("\n ***************************CIVILIZATION STATS*************************** ");
@@ -519,9 +475,6 @@ public class Civilization implements Variables {
 		System.out.println();
 	}
 
-	// -------------------------------------------------------------------------
-	// Getters & Setters
-	// -------------------------------------------------------------------------
 
 	public String getName() {
 		return name;
@@ -620,11 +573,11 @@ public class Civilization implements Variables {
 	}
 
 	public int getNBattles() {
-		return nBattles;
+		return battles;
 	}
 
 	public void setNBattles(int nBattles) {
-		this.nBattles = nBattles;
+		this.battles = nBattles;
 	}
 
 	public boolean isActiveThreat() {
@@ -661,7 +614,7 @@ public class Civilization implements Variables {
 
 	public String toString() {
 		return "Civilization [name=" + name + ", tDefense=" + technologyDefense + ", tAttack=" + technologyAttack
-				+ ", food=" + food + ", wood=" + wood + ", iron=" + iron + ", mana=" + mana + ", battles=" + nBattles
+				+ ", food=" + food + ", wood=" + wood + ", iron=" + iron + ", mana=" + mana + ", battles=" + battles
 				+ "]";
 	}
 }
